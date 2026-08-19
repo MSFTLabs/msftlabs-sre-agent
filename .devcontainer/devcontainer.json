@@ -39,6 +39,10 @@
     "ghcr.io/devcontainers/features/github-cli:1": {
       "version": "latest"
     },
+    // GitHub Copilot CLI — agentic `copilot` command in the terminal for the SRE Agent demos.
+    "ghcr.io/devcontainers/features/copilot-cli:1": {
+      "version": "latest"
+    },
     // Docker-in-Docker — local container image builds for the sample apps (zava-learning, compliance).
     "ghcr.io/devcontainers/features/docker-in-docker:2": {
       "version": "latest",

@@ -26,9 +26,14 @@ echo "  Installing Azure MCP CLI (azmcp)..."
 npm install -g @azure/mcp@latest \
   || echo "  azmcp install skipped — install later with: npm i -g @azure/mcp@latest"
 
+# azd: reuse the Azure CLI token so a single `az login` covers both CLIs
+echo "  Configuring azd to use Azure CLI auth..."
+azd config set auth.useAzCliAuth true >/dev/null 2>&1 \
+  || echo "  azd auth config skipped — run: azd config set auth.useAzCliAuth true"
+
 echo ""
 echo "==> Done. Installed toolchain:"
-for tool in az azd git python3 node npm jq gh terraform pwsh dotnet kubectl helm docker; do
+for tool in az azd git python3 node npm jq gh copilot terraform pwsh dotnet kubectl helm docker; do
   if command -v "$tool" >/dev/null 2>&1; then
     printf "    %-10s %s\n" "$tool" "$("$tool" --version 2>&1 | head -1)"
   else
@@ -37,4 +42,4 @@ for tool in az azd git python3 node npm jq gh terraform pwsh dotnet kubectl helm
 done
 
 echo ""
-echo "Next: 'az login' then 'azd auth login', then open a lab in labs/ and run 'azd up'."
+echo "Next: 'az login' (azd reuses this token), then open a lab in labs/ and run 'azd up'."
