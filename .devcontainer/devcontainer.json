@@ -1,0 +1,93 @@
+// Dev Container for the Azure SRE Agent labs & recipes.
+// Works in GitHub Codespaces and locally via Dev Containers (Docker Desktop / Docker Engine).
+// Bundles every CLI the SRE Agent demos need: az, azd, git, Python+PyYAML, jq, gh,
+// Terraform, Node.js, .NET (for `srectl`), PowerShell, Docker, kubectl/helm, Bicep, and azmcp.
+{
+  "name": "Azure SRE Agent Labs",
+  "image": "mcr.microsoft.com/devcontainers/base:ubuntu-24.04",
+
+  "features": {
+    // Core Azure tooling — used by every lab (az login, az deployment, RBAC, ACR build).
+    "ghcr.io/devcontainers/features/azure-cli:1": {
+      "version": "latest"
+    },
+    // Azure Developer CLI — starter-lab, deployment-compliance, vm-cosmosdb, zava-* use `azd up`.
+    "ghcr.io/azure/azure-dev/azd:latest": {},
+
+    // Python 3 + pip — post-provision scripts and PyYAML-based agent config generation.
+    "ghcr.io/devcontainers/features/python:1": {
+      "version": "3.12",
+      "installTools": true
+    },
+    // Node.js — sample apps (grubify, zava, compliance-demo, drift app) and azmcp CLI.
+    "ghcr.io/devcontainers/features/node:1": {
+      "version": "20"
+    },
+    // .NET SDK — required for the `srectl` dotnet global tool (zava-learning agent config).
+    "ghcr.io/devcontainers/features/dotnet:2": {
+      "version": "8.0"
+    },
+    // PowerShell 7+ — zava-learning, zava-aks-postgres and sreagent-templates ship .ps1 scripts.
+    "ghcr.io/devcontainers/features/powershell:1": {
+      "version": "latest"
+    },
+    // Terraform — terraform-drift-detection lab and sreagent-templates Terraform path.
+    "ghcr.io/devcontainers/features/terraform:1": {
+      "version": "latest"
+    },
+    // GitHub CLI — deployment-guard lab (`gh auth`, PR/issue flows) and code-connector scenarios.
+    "ghcr.io/devcontainers/features/github-cli:1": {
+      "version": "latest"
+    },
+    // Docker-in-Docker — local container image builds for the sample apps (zava-learning, compliance).
+    "ghcr.io/devcontainers/features/docker-in-docker:2": {
+      "version": "latest",
+      "moby": true
+    },
+    // kubectl + helm — zava-aks-postgres (AKS) inspection and manifest apply.
+    "ghcr.io/devcontainers/features/kubectl-helm-minikube:1": {
+      "version": "latest",
+      "helm": "latest",
+      "minikube": "none"
+    }
+  },
+
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        // Azure
+        "ms-azuretools.azure-dev",
+        "ms-azuretools.vscode-azureresourcegroups",
+        "ms-azuretools.vscode-bicep",
+        "ms-azuretools.vscode-azurecontainerapps",
+        "ms-azuretools.vscode-docker",
+        "ms-vscode.azurecli",
+        "ms-azuretools.vscode-azure-github-copilot",
+        // IaC / infra
+        "hashicorp.terraform",
+        "ms-kubernetes-tools.vscode-kubernetes-tools",
+        // Languages
+        "ms-python.python",
+        "ms-python.vscode-pylance",
+        "ms-vscode.powershell",
+        "redhat.vscode-yaml",
+        // GitHub / CI
+        "github.vscode-github-actions",
+        "github.copilot",
+        "github.copilot-chat"
+      ]
+    }
+  },
+
+  // Sample apps in the labs listen on 8080 (APIs) and 3000 (frontends) when run locally.
+  "forwardPorts": [8080, 3000],
+  "portsAttributes": {
+    "8080": { "label": "Sample API" },
+    "3000": { "label": "Sample Frontend" }
+  },
+
+  // Install the remaining CLIs that ship best via package manager / npm / dotnet.
+  "postCreateCommand": "bash .devcontainer/post-create.sh",
+
+  "remoteUser": "vscode"
+}
